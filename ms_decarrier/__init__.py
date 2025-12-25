@@ -98,6 +98,7 @@ def decarry_file(input_file, output_file, threshold=4, rtol=100e-6):
             carry_mask = _fast_concat_and_pad(
                 carry_mask[skip_offset:],
                 carry_mask_batch[:-len(batch_overlap)],
+                dtype=np.uint8
             )
 
         # Reconstruct the batch with original parameters and intensities

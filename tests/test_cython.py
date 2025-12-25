@@ -31,7 +31,7 @@ def test_backwards_cleanup():
         [1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1],
     ])
-    decarry_mask = decarry_batch(
+    decarry_mask, _, _ = decarry_batch(
         spectra_peaks=mz_batch,
         peak_counts=np.array([len(s) for s in mz_batch], dtype=np.uint32),
         initial_carries=np.array([3, 5], dtype=np.float64),
@@ -39,4 +39,4 @@ def test_backwards_cleanup():
         threshold=4,
         rtol=1*10e-6
     )
-    pass
+    assert (decarry_mask==exp_decarry).all()

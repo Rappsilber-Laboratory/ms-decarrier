@@ -131,7 +131,7 @@ def decarry_file(input_file, output_file, threshold=4, rtol=100e-6):
     return carry_mask
 
 
-def _fast_concat_and_pad(arr1, arr2):
+def _fast_concat_and_pad(arr1, arr2, dtype=None):
     h1, w1 = arr1.shape
     h2, w2 = arr2.shape
     max_w = max(w1, w2)
@@ -139,7 +139,7 @@ def _fast_concat_and_pad(arr1, arr2):
     # Pre-allocate full result array
     res = np.zeros(
         shape=(h1 + h2, max_w),
-        dtype=arr1.dtype,
+        dtype=dtype or arr1.dtype,
     )
 
     # Place arrays in the result

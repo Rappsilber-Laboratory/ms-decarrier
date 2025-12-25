@@ -97,13 +97,12 @@ def decarry_file(input_file, output_file, threshold=5, rtol=100e-6):
         else:
             carry_mask = _fast_concat_and_pad(
                 carry_mask[skip_offset:],
-                carry_mask_batch[:-threshold],
+                carry_mask_batch[:-len(batch_overlap)],
             )
 
         # Reconstruct the batch with original parameters and intensities
         output_spectra = []
-        clean_mzs = spectra_mzs[skip_offset:] * carry_mask_batch[skip_offset:].astype(int)
-        keep_mask = clean_mzs > 0
+        keep_mask = carry_mask_batch[skip_offset:].astype(bool)
         for i, original_spec in enumerate(raw_batch_overlapping[:-len(batch_overlap)]):
             new_spec = {
                 'm/z array': spectra_mzs[skip_offset:][i][keep_mask[i]],
@@ -128,8 +127,8 @@ def decarry_file(input_file, output_file, threshold=5, rtol=100e-6):
     t_read.join()
     t_write.join()
     pbar.close()
-    print(f"Done! Final Global Carry Count: {len(state['glob_c'])}")
-    return carry_mask, state['glob_c']
+    print(f"Done! Final Carry Count: {np.count_nonzero(~carry_mask)}")
+    return carry_mask
 
 
 def _fast_concat_and_pad(arr1, arr2):

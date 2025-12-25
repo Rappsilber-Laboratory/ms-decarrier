@@ -84,7 +84,7 @@ def decarry_file(input_file, output_file, threshold=4, rtol=100e-6):
         # (Assuming return: cleaned_spectra, current_carries, current_counts, global_carries)
         # Force the types right at the point of the call
         carry_mask_batch, state['cur_c'], state['cur_cnt'] = decarry_batch(
-            spectra_mzs,
+            spectra_mzs.copy(),
             peak_counts.astype(np.uint32),
             initial_carries=state['cur_c'].astype(np.float64),
             initial_carries_count=state['cur_cnt'].astype(np.int32),
@@ -102,8 +102,8 @@ def decarry_file(input_file, output_file, threshold=4, rtol=100e-6):
 
         # Reconstruct the batch with original parameters and intensities
         output_spectra = []
-        keep_mask = carry_mask_batch[skip_offset:].astype(bool)
-        for i, original_spec in enumerate(raw_batch_overlapping[:-len(batch_overlap)]):
+        keep_mask = (spectra_mzs[skip_offset:] * carry_mask_batch[skip_offset:].astype(bool)) > 0
+        for i, original_spec in enumerate(raw_batch_overlapping[skip_offset:-len(batch_overlap)]):
             new_spec = {
                 'm/z array': spectra_mzs[skip_offset:][i][keep_mask[i]],
                 'intensity array': spectra_intensities[skip_offset:][i][keep_mask[i]],

@@ -6,7 +6,7 @@ from pyteomics import mgf
 from itertools import zip_longest
 from .decarry_batch import decarry_batch
 
-def decarry_file(input_file, output_file, threshold=5, rtol=100e-6):
+def decarry_file(input_file, output_file, threshold=4, rtol=100e-6):
     # Queues for parallel I/O
     read_queue = Queue(maxsize=10)
     write_queue = Queue(maxsize=10)
